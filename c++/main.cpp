@@ -9,7 +9,14 @@
 // in the parent function?  I may want this if, for example, one invocation of the subfunction has
 // args with which it runs fast, and another invocation has problematic args that make it run slowly.
 
-void func() {
+void make_requires_grad_false() {
+  for (int i = 0; i < 100000; i++) {
+    // auto a = torch::empty({2, 3}, torch::dtype(torch::kFloat32).device(torch::kCUDA, 1).requires_grad(true));
+    auto a = torch::empty({2, 3}, torch::dtype(torch::kFloat32).device(torch::kCPU, 0));
+  }
+}
+
+void make_requires_grad_true() {
   for (int i = 0; i < 100000; i++) {
     // auto a = torch::empty({2, 3}, torch::dtype(torch::kFloat32).device(torch::kCUDA, 1).requires_grad(true));
     auto a = torch::empty({2, 3}, torch::dtype(torch::kFloat32).device(torch::kCPU, 0).requires_grad(true));
@@ -17,11 +24,7 @@ void func() {
 }
 
 int main() {
-  func();
-  for (int i = 0; i < 100000; i++) {
-    // auto a = torch::empty({2, 3}, torch::dtype(torch::kFloat32).device(torch::kCUDA, 1).requires_grad(true));
-    auto a = torch::empty({2, 3}, torch::dtype(torch::kFloat32).device(torch::kCPU, 0).requires_grad(true));
-  }
-  func();
+  make_requires_grad_true();
+  make_requires_grad_false();
 }
 
